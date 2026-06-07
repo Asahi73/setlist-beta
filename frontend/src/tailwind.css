@@ -1,1 +1,4 @@
 @import "tailwindcss";
+
+/* Angularのテンプレート(.html)とTSを明示的にスキャン対象にする */
+@source "./app/**/*.{html,ts}";
