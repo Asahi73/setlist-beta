@@ -37,3 +37,19 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+// --- カラー運用ルール（.claude/skills/frontend-design/SKILL.md）---
+// 「モノクロ + 青1色」。青はプライマリ(filled)ボタンとフォーカスのみ。
+// Angular Material M3 は色未指定の outlined/text ボタンを既定で primary(青)文字色に
+// するため、secondary/ghost 相当（色未指定）をモノクロ（on-surface）へ上書きする。
+// Material のボタンスタイルが後勝ちするため !important で確実に上書きする
+.mat-mdc-outlined-button.mat-unthemed,
+.mat-mdc-button.mat-unthemed {
+  --mdc-outlined-button-label-text-color: var(--mat-sys-on-surface) !important;
+  --mdc-text-button-label-text-color: var(--mat-sys-on-surface) !important;
+  color: var(--mat-sys-on-surface) !important;
+
+  .mat-icon {
+    color: var(--mat-sys-on-surface) !important;
+  }
+}
