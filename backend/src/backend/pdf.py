@@ -85,27 +85,27 @@ def _color_rows(setlist: Setlist) -> str:
 def _color_html(setlist: Setlist) -> str:
     title = escape(setlist.title) or "セットリスト"
     css = f"""
-    @page {{ size: A4 landscape; margin: 6mm; }}
+    @page {{ size: A4 portrait; margin: 6mm; }}
     html, body {{ height: 100%; margin: 0; }}
     body {{
       background: #000; color: #fff; box-sizing: border-box;
-      padding: 8mm 12mm;
+      padding: 7mm 10mm;
       font-family: 'Noto Sans CJK JP','Noto Sans JP',sans-serif;
     }}
-    .head {{ margin-bottom: 6mm; }}
-    .head .title {{ color: {_NEON_YELLOW}; font-size: 30pt; font-weight: bold; }}
-    .head .meta {{ color: #fff; font-size: 13pt; margin-top: 2mm; }}
+    .head {{ margin-bottom: 4mm; }}
+    .head .title {{ color: {_NEON_YELLOW}; font-size: 26pt; font-weight: bold; }}
+    .head .meta {{ color: #fff; font-size: 12pt; margin-top: 1.5mm; }}
     table {{ width: 100%; border-collapse: collapse; }}
-    td {{ padding: 3.5mm 3mm; border-bottom: 1px solid #333; font-size: 20pt; }}
-    td.num {{ color: #fff; width: 10mm; }}
-    td.title {{ color: {_NEON_YELLOW}; font-weight: bold; }}
+    td {{ padding: 2.6mm 3mm; border-bottom: 1px solid #333; font-size: 17pt; vertical-align: baseline; }}
+    td.num {{ color: #fff; width: 9mm; font-size: 14pt; }}
+    td.title {{ color: {_NEON_YELLOW}; font-weight: bold; font-size: 23pt; }}
     td.key, td.dur {{ color: #fff; white-space: nowrap; }}
-    td.note {{ color: #fff; font-size: 13pt; }}
-    tr.mc td {{ color: #fff; font-style: italic; font-size: 15pt; }}
-    tr.mc td.num {{ color: {_NEON_YELLOW}; font-style: normal; font-weight: bold; }}
+    td.note {{ color: #fff; font-size: 11pt; }}
+    tr.mc td {{ color: #fff; font-style: italic; font-size: 13pt; }}
+    tr.mc td.num {{ color: #fff; font-style: normal; font-weight: bold; }}
     tr.encore td {{
       color: {_NEON_YELLOW}; font-weight: bold; text-align: center;
-      font-size: 18pt; letter-spacing: 0.3em; padding: 3mm;
+      font-size: 15pt; letter-spacing: 0.3em; padding: 2.4mm;
       border-top: 2px solid {_NEON_YELLOW}; border-bottom: 2px solid {_NEON_YELLOW};
     }}
     """
