@@ -11,8 +11,8 @@ from html import escape
 from .models import Setlist
 
 _NEON_YELLOW = "#EBFF00"
-# 軽量な日本語フォント（Dockerで fonts-vlgothic を導入）。描画高速化のため。
-_FONT = "'VL Gothic','VL PGothic',sans-serif"
+# 日本語フォント（Dockerで fonts-noto-cjk を導入）
+_FONT = "'Noto Sans CJK JP','Noto Sans JP',sans-serif"
 
 
 def _format_duration(sec: int) -> str:
