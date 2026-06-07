@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="flex justify-between gap-2">
+<mat-toolbar class="flex justify-between gap-2 border-b">
   <span class="font-bold">セットリスト編集</span>
   <button mat-button (click)="logout()">
     <mat-icon>logout</mat-icon>
@@ -72,11 +72,7 @@
             <td class="text-center cursor-move text-gray-400" cdkDragHandle>
               <mat-icon>drag_indicator</mat-icon>
             </td>
-            <td
-              class="text-center font-medium"
-              [class.text-pink-600]="isMc(i)"
-              [class.text-amber-600]="isEncore(i)"
-            >
+            <td class="text-center font-medium text-gray-500">
               {{ rowLabel(i) }}
             </td>
 
@@ -126,7 +122,7 @@
   }
 
   <div class="flex flex-wrap gap-2 mt-3">
-    <button mat-stroked-button color="primary" (click)="addSong()">
+    <button mat-stroked-button (click)="addSong()">
       <mat-icon>add</mat-icon> 曲を追加
     </button>
     <button mat-stroked-button (click)="addMc()">

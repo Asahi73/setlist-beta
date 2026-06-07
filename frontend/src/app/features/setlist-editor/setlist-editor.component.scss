@@ -25,18 +25,18 @@ td {
   vertical-align: middle;
 }
 
-// MC行は色味で区別
+// MC行はモノクロの濃淡＋斜体で区別（仕様: モノクロ + 青のみ）
 .mc-row {
-  background: rgba(236, 72, 153, 0.06); // pink系の薄い背景
+  background: rgba(0, 0, 0, 0.03); // ごく薄いグレー
 
   .cell {
     font-style: italic;
   }
 }
 
-// アンコール見出し行
+// アンコール見出し行（MCより少し濃いグレーで区別）
 .encore-row {
-  background: rgba(245, 158, 11, 0.1); // amber系の薄い背景
+  background: rgba(0, 0, 0, 0.07);
 
   .cell {
     letter-spacing: 0.2em;
