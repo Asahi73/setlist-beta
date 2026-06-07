@@ -24,12 +24,17 @@
     <button mat-flat-button color="primary" (click)="save()" [disabled]="saving()">
       <mat-icon>save</mat-icon> 保存
     </button>
-    <button mat-stroked-button (click)="exportPdf('color')">
+    <button mat-stroked-button (click)="exportPdf('color')" [disabled]="generating()">
       <mat-icon>palette</mat-icon> PDF（蛍光色）
     </button>
-    <button mat-stroked-button (click)="exportPdf('mono')">
+    <button mat-stroked-button (click)="exportPdf('mono')" [disabled]="generating()">
       <mat-icon>print</mat-icon> PDF（白黒）
     </button>
+    @if (generating()) {
+      <span class="flex items-center gap-2 text-sm opacity-70">
+        <mat-spinner diameter="18"></mat-spinner> 生成中…
+      </span>
+    }
     <span class="ml-auto text-sm opacity-70">
       全{{ songCount() }}曲 / 合計 {{ totalDuration() }}
     </span>

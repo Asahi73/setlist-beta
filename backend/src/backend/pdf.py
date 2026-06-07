@@ -11,6 +11,8 @@ from html import escape
 from .models import Setlist
 
 _NEON_YELLOW = "#EBFF00"
+# 軽量な日本語フォント（Dockerで fonts-vlgothic を導入）。描画高速化のため。
+_FONT = "'VL Gothic','VL PGothic',sans-serif"
 
 
 def _format_duration(sec: int) -> str:
@@ -90,7 +92,7 @@ def _color_html(setlist: Setlist) -> str:
     body {{
       background: #000; color: #fff; box-sizing: border-box;
       padding: 7mm 10mm;
-      font-family: 'Noto Sans CJK JP','Noto Sans JP',sans-serif;
+      font-family: {_FONT};
     }}
     .head {{ margin-bottom: 4mm; }}
     .head .title {{ color: {_NEON_YELLOW}; font-size: 26pt; font-weight: bold; }}
@@ -160,7 +162,7 @@ def _mono_html(setlist: Setlist) -> str:
     title = escape(setlist.title) or "セットリスト"
     css = """
     @page { size: A4 portrait; margin: 15mm; }
-    body { color:#000; font-family:'Noto Sans CJK JP','Noto Sans JP',sans-serif; }
+    body { color:#000; font-family:__FONT__; }
     h1 { font-size:22pt; margin:0 0 3mm; }
     .meta { color:#444; font-size:10pt; margin-bottom:5mm; }
     table { width:100%; border-collapse:collapse; }
@@ -171,7 +173,7 @@ def _mono_html(setlist: Setlist) -> str:
     tr.mc td { color:#555; font-style:italic; }
     tr.mc td.num { color:#000; font-style:normal; font-weight:bold; }
     tr.encore td { background:#eee; font-weight:bold; text-align:center; letter-spacing:0.3em; }
-    """
+    """.replace("__FONT__", _FONT)
     return f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><style>{css}</style></head>
 <body>
