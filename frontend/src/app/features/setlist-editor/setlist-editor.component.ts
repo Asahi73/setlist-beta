@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -36,6 +37,7 @@ import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './setlist-editor.component.html',
   styleUrl: './setlist-editor.component.scss',
@@ -50,6 +52,7 @@ export class SetlistEditorComponent implements OnInit {
 
   readonly excitementLevels = [0, 1, 2, 3, 4, 5];
   readonly saving = signal(false);
+  readonly generating = signal(false);
 
   form = this.fb.group({
     title: [''],
@@ -183,6 +186,7 @@ export class SetlistEditorComponent implements OnInit {
     // 編集中の内容を保存しつつ、そのままPDF生成リクエストに送る
     const setlist = this.toSetlist();
     this.service.save(setlist);
+    this.generating.set(true);
     this.service
       .downloadPdf(mode, setlist)
       .then((blob) => {
@@ -197,7 +201,8 @@ export class SetlistEditorComponent implements OnInit {
       })
       .catch(() =>
         this.snackBar.open('PDF出力に失敗しました', undefined, { duration: 3000 }),
-      );
+      )
+      .finally(() => this.generating.set(false));
   }
 
   logout(): void {
