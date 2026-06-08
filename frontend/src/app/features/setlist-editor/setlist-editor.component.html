@@ -1,10 +1,34 @@
-<mat-toolbar class="flex justify-between gap-2 border-b">
-  <span class="font-bold">セットリスト編集</span>
-  <button mat-button (click)="logout()">
-    <mat-icon>logout</mat-icon>
-    ログアウト
-  </button>
-</mat-toolbar>
+<header class="app-header">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center gap-3">
+    <!-- ブランド -->
+    <div class="flex items-center gap-2 shrink-0">
+      <mat-icon class="brand-ic">queue_music</mat-icon>
+      <span class="font-bold text-lg tracking-tight">セットリスト管理</span>
+      <span class="beta-badge">BETA</span>
+    </div>
+
+    <!-- ナビ（将来機能・現状は遷移しない） -->
+    <nav class="hidden md:flex items-center gap-1 ml-3">
+      <button type="button" class="nav-link nav-active">
+        <mat-icon class="nav-ic">edit</mat-icon> 編集
+      </button>
+      <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
+        <mat-icon class="nav-ic">library_music</mat-icon> セットリスト一覧
+      </button>
+      <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
+        <mat-icon class="nav-ic">queue_music</mat-icon> 曲ライブラリ
+      </button>
+      <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
+        <mat-icon class="nav-ic">settings</mat-icon> 設定
+      </button>
+    </nav>
+
+    <!-- ログアウト -->
+    <button type="button" class="nav-link ml-auto shrink-0" (click)="logout()">
+      <mat-icon class="nav-ic">logout</mat-icon> ログアウト
+    </button>
+  </div>
+</header>
 
 <div class="p-4 max-w-6xl mx-auto" [formGroup]="form">
   <!-- セットリスト名 / 持ち時間 -->
