@@ -43,11 +43,8 @@
     </mat-form-field>
   </div>
 
-  <!-- 操作ボタン -->
+  <!-- 操作ボタン（保存ボタンは廃止し、変更は自動保存される） -->
   <div class="flex flex-wrap gap-2 my-3 items-center">
-    <button mat-flat-button color="primary" (click)="save()" [disabled]="saving()">
-      <mat-icon>save</mat-icon> 保存
-    </button>
     <button mat-stroked-button (click)="exportPdf('color')" [disabled]="generating()">
       <mat-icon>palette</mat-icon> PDF（蛍光色）
     </button>
@@ -59,9 +56,27 @@
         <mat-spinner diameter="18"></mat-spinner> 生成中…
       </span>
     }
-    <span class="ml-auto text-sm opacity-70">
+    <span class="ml-auto text-sm opacity-70 flex items-center gap-1">
+      @if (saved()) {
+        <mat-icon class="!text-base !w-4 !h-4 leading-4">check</mat-icon>
+        <span>保存済み</span>
+        <span class="opacity-50">/</span>
+      }
       全{{ songCount() }}曲 / 合計 {{ totalDuration() }}
     </span>
+  </div>
+
+  <!-- 行の追加ボタン（テーブル上部） -->
+  <div class="flex flex-wrap gap-2 mb-3">
+    <button mat-stroked-button (click)="addSong()">
+      <mat-icon>add</mat-icon> 曲を追加
+    </button>
+    <button mat-stroked-button (click)="addMc()">
+      <mat-icon>mic</mat-icon> MCを追加
+    </button>
+    <button mat-stroked-button (click)="addEncore()">
+      <mat-icon>replay</mat-icon> アンコールを追加
+    </button>
   </div>
 
   <!-- テーブル -->
@@ -142,18 +157,6 @@
   </div>
 
   @if (songs.length === 0) {
-    <p class="text-center opacity-60 my-6">行がありません。下のボタンで曲・MC・アンコールを追加してください。</p>
+    <p class="text-center opacity-60 my-6">行がありません。上のボタンで曲・MC・アンコールを追加してください。</p>
   }
-
-  <div class="flex flex-wrap gap-2 mt-3">
-    <button mat-stroked-button (click)="addSong()">
-      <mat-icon>add</mat-icon> 曲を追加
-    </button>
-    <button mat-stroked-button (click)="addMc()">
-      <mat-icon>mic</mat-icon> MCを追加
-    </button>
-    <button mat-stroked-button (click)="addEncore()">
-      <mat-icon>replay</mat-icon> アンコールを追加
-    </button>
-  </div>
 </div>
