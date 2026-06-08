@@ -30,133 +30,138 @@
   </div>
 </header>
 
-<div class="p-4 max-w-6xl mx-auto" [formGroup]="form">
-  <!-- セットリスト名 / 持ち時間 -->
-  <div class="flex flex-wrap gap-4">
-    <mat-form-field class="flex-1 min-w-64">
-      <mat-label>セットリスト名</mat-label>
-      <input matInput formControlName="title" placeholder="例: 6/15 渋谷LIVE" />
-    </mat-form-field>
-    <mat-form-field class="w-48">
-      <mat-label>持ち時間</mat-label>
-      <input matInput formControlName="slot_time" placeholder="例: 30分" />
-    </mat-form-field>
-  </div>
+<main class="page">
+  <div class="max-w-6xl mx-auto px-4 py-6" [formGroup]="form">
+    <section class="card">
+      <!-- セットリスト名 / 持ち時間 -->
+      <div class="flex flex-wrap gap-4">
+        <mat-form-field class="flex-1 min-w-64">
+          <mat-label>セットリスト名</mat-label>
+          <input matInput formControlName="title" placeholder="例: 6/15 渋谷LIVE" />
+        </mat-form-field>
+        <mat-form-field class="w-48">
+          <mat-label>持ち時間</mat-label>
+          <input matInput formControlName="slot_time" placeholder="例: 30分" />
+        </mat-form-field>
+      </div>
 
-  <!-- 操作ボタン（保存ボタンは廃止し、変更は自動保存される） -->
-  <div class="flex flex-wrap gap-2 my-3 items-center">
-    <button mat-stroked-button (click)="exportPdf('color')" [disabled]="generating()">
-      <mat-icon>palette</mat-icon> PDF（蛍光色）
-    </button>
-    <button mat-stroked-button (click)="exportPdf('mono')" [disabled]="generating()">
-      <mat-icon>print</mat-icon> PDF（白黒）
-    </button>
-    @if (generating()) {
-      <span class="flex items-center gap-2 text-sm opacity-70">
-        <mat-spinner diameter="18"></mat-spinner> 生成中…
-      </span>
-    }
-    <span class="ml-auto text-sm opacity-70 flex items-center gap-1">
-      @if (saved()) {
-        <mat-icon class="!text-base !w-4 !h-4 leading-4">check</mat-icon>
-        <span>保存済み</span>
-        <span class="opacity-50">/</span>
-      }
-      全{{ songCount() }}曲 / 合計 {{ totalDuration() }}
-    </span>
-  </div>
+      <!-- ツールバー: 左=項目追加 / 右=PDF出力（青・プライマリ） -->
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <button mat-stroked-button (click)="addSong()">
+          <mat-icon>add</mat-icon> 曲を追加
+        </button>
+        <button mat-stroked-button (click)="addMc()">
+          <mat-icon>mic</mat-icon> MCを追加
+        </button>
+        <button mat-stroked-button (click)="addEncore()">
+          <mat-icon>replay</mat-icon> アンコールを追加
+        </button>
 
-  <!-- 行の追加ボタン（テーブル上部） -->
-  <div class="flex flex-wrap gap-2 mb-3">
-    <button mat-stroked-button (click)="addSong()">
-      <mat-icon>add</mat-icon> 曲を追加
-    </button>
-    <button mat-stroked-button (click)="addMc()">
-      <mat-icon>mic</mat-icon> MCを追加
-    </button>
-    <button mat-stroked-button (click)="addEncore()">
-      <mat-icon>replay</mat-icon> アンコールを追加
-    </button>
-  </div>
+        <div class="ml-auto flex items-center gap-2">
+          @if (generating()) {
+            <span class="flex items-center gap-1 text-sm text-gray-500">
+              <mat-spinner diameter="18"></mat-spinner> 生成中…
+            </span>
+          }
+          <button mat-flat-button class="btn-pdf" (click)="exportPdf('color')" [disabled]="generating()">
+            <mat-icon>palette</mat-icon> PDF（蛍光色）
+          </button>
+          <button mat-flat-button class="btn-pdf" (click)="exportPdf('mono')" [disabled]="generating()">
+            <mat-icon>print</mat-icon> PDF（白黒）
+          </button>
+        </div>
+      </div>
 
-  <!-- テーブル -->
-  <div class="overflow-x-auto border rounded">
-    <table class="w-full text-sm">
-      <thead>
-        <tr class="bg-gray-100 text-left">
-          <th class="w-8"></th>
-          <th class="w-10">#</th>
-          <th class="min-w-48">曲名 / MC・アンコール</th>
-          <th class="w-20">Key</th>
-          <th class="w-20">BPM</th>
-          <th class="w-24">時間</th>
-          <th class="w-32">盛り上がり</th>
-          <th class="min-w-40">備考</th>
-          <th class="w-12"></th>
-        </tr>
-      </thead>
-      <tbody
-        formArrayName="songs"
-        cdkDropList
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (row of songs.controls; track row; let i = $index) {
-          <tr
-            [formGroupName]="i"
-            cdkDrag
-            class="border-t"
-            [class.mc-row]="isMc(i)"
-            [class.encore-row]="isEncore(i)"
-          >
-            <td class="text-center cursor-move text-gray-400" cdkDragHandle>
-              <mat-icon>drag_indicator</mat-icon>
-            </td>
-            <td class="text-center font-medium text-gray-500">
-              {{ rowLabel(i) }}
-            </td>
-
-            @if (isEncore(i)) {
-              <!-- アンコール見出し行（全幅） -->
-              <td colspan="6">
-                <input
-                  class="cell text-center font-bold"
-                  formControlName="title"
-                  placeholder="アンコール"
-                />
-              </td>
-            } @else if (isMc(i)) {
-              <!-- MC行: 曲名〜盛り上がりを結合してトーク内容を入力 -->
-              <td colspan="5">
-                <input class="cell" formControlName="title" placeholder="MCの内容（話すこと・煽りなど）" />
-              </td>
-              <td><input class="cell" formControlName="note" placeholder="備考" /></td>
-            } @else {
-              <td><input class="cell" formControlName="title" placeholder="曲名" /></td>
-              <td><input class="cell" formControlName="key" placeholder="C" /></td>
-              <td><input class="cell" type="number" min="0" formControlName="bpm" placeholder="BPM" /></td>
-              <td><input class="cell" formControlName="duration" placeholder="4:30" /></td>
-              <td>
-                <select class="cell" formControlName="excitement">
-                  @for (lv of excitementLevels; track lv) {
-                    <option [value]="lv">{{ lv === 0 ? '-' : '★'.repeat(lv) }}</option>
-                  }
-                </select>
-              </td>
-              <td><input class="cell" formControlName="note" placeholder="備考" /></td>
-            }
-
-            <td class="text-center">
-              <button mat-icon-button color="warn" (click)="removeRow(i)" type="button">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </tr>
+      <!-- ステータス -->
+      <div class="flex justify-end items-center gap-1 text-sm text-gray-500 mb-2">
+        @if (saved()) {
+          <mat-icon class="saved-ic">check_circle</mat-icon>
+          <span>保存済み</span>
+          <span class="opacity-40 mx-1">/</span>
         }
-      </tbody>
-    </table>
-  </div>
+        <span>全{{ songCount() }}曲 / 合計 {{ totalDuration() }}</span>
+      </div>
 
-  @if (songs.length === 0) {
-    <p class="text-center opacity-60 my-6">行がありません。上のボタンで曲・MC・アンコールを追加してください。</p>
-  }
-</div>
+      <!-- テーブル -->
+      <div class="overflow-x-auto border border-gray-200 rounded-lg">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 text-left text-gray-600">
+              <th class="w-8"></th>
+              <th class="w-10">#</th>
+              <th class="min-w-48">曲名 / MC・アンコール</th>
+              <th class="w-20">Key</th>
+              <th class="w-20">BPM</th>
+              <th class="w-24">時間</th>
+              <th class="w-32">盛り上がり</th>
+              <th class="min-w-40">備考</th>
+              <th class="w-12"></th>
+            </tr>
+          </thead>
+          <tbody
+            formArrayName="songs"
+            cdkDropList
+            (cdkDropListDropped)="drop($event)"
+          >
+            @for (row of songs.controls; track row; let i = $index) {
+              <tr
+                [formGroupName]="i"
+                cdkDrag
+                class="border-t border-gray-200"
+                [class.mc-row]="isMc(i)"
+                [class.encore-row]="isEncore(i)"
+              >
+                <td class="text-center cursor-move text-gray-400" cdkDragHandle>
+                  <mat-icon>drag_indicator</mat-icon>
+                </td>
+                <td class="text-center font-medium text-gray-500">
+                  {{ rowLabel(i) }}
+                </td>
+
+                @if (isEncore(i)) {
+                  <!-- アンコール見出し行（全幅） -->
+                  <td colspan="6">
+                    <input
+                      class="cell text-center font-bold"
+                      formControlName="title"
+                      placeholder="アンコール"
+                    />
+                  </td>
+                } @else if (isMc(i)) {
+                  <!-- MC行: 曲名〜盛り上がりを結合してトーク内容を入力 -->
+                  <td colspan="5">
+                    <input class="cell" formControlName="title" placeholder="MCの内容（話すこと・煽りなど）" />
+                  </td>
+                  <td><input class="cell" formControlName="note" placeholder="備考" /></td>
+                } @else {
+                  <td><input class="cell" formControlName="title" placeholder="曲名" /></td>
+                  <td><input class="cell" formControlName="key" placeholder="C" /></td>
+                  <td><input class="cell" type="number" min="0" formControlName="bpm" placeholder="BPM" /></td>
+                  <td><input class="cell" formControlName="duration" placeholder="4:30" /></td>
+                  <td>
+                    <select class="cell" formControlName="excitement">
+                      @for (lv of excitementLevels; track lv) {
+                        <option [value]="lv">{{ lv === 0 ? '-' : '★'.repeat(lv) }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td><input class="cell" formControlName="note" placeholder="備考" /></td>
+                }
+
+                <td class="text-center">
+                  <button mat-icon-button color="warn" (click)="removeRow(i)" type="button">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (songs.length === 0) {
+        <p class="text-center opacity-60 my-6">行がありません。上のボタンで曲・MC・アンコールを追加してください。</p>
+      }
+    </section>
+  </div>
+</main>
