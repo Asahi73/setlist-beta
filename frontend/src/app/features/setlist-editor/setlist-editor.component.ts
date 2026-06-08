@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
   FormBuilder,
@@ -6,6 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { debounceTime } from 'rxjs';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -49,10 +51,12 @@ export class SetlistEditorComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   readonly excitementLevels = [0, 1, 2, 3, 4, 5];
-  readonly saving = signal(false);
   readonly generating = signal(false);
+  // 自動保存済みかどうか（保存ボタンは廃止）
+  readonly saved = signal(false);
 
   form = this.fb.group({
     title: [''],
@@ -67,6 +71,11 @@ export class SetlistEditorComponent implements OnInit {
   ngOnInit(): void {
     // データはlocalStorageから読み込む（無ければサンプル）
     this.setForm(this.service.load());
+
+    // 項目の追加・削除・編集・並び替えのたびに自動保存する（保存ボタンは廃止）
+    this.form.valueChanges
+      .pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.autoSave());
   }
 
   private setForm(setlist: Setlist): void {
@@ -176,10 +185,10 @@ export class SetlistEditorComponent implements OnInit {
     };
   }
 
-  save(): void {
-    // localStorageに保存（同期）
+  private autoSave(): void {
+    // localStorageに保存（同期）。追加・削除・編集・並び替えで自動的に呼ばれる
     this.service.save(this.toSetlist());
-    this.snackBar.open('保存しました', undefined, { duration: 2000 });
+    this.saved.set(true);
   }
 
   exportPdf(mode: PdfMode): void {
