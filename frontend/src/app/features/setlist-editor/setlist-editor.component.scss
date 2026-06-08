@@ -73,6 +73,50 @@
   height: 18px;
 }
 
+// --- ページ／カード（ヘッダの青に対し、本文は白カード＋グレー背景でまとめる）---
+.page {
+  background: #f4f4f5; // surface-alt
+  min-height: calc(100vh - 64px); // ヘッダ(h-16=64px)を除いた高さ
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 20px 24px;
+}
+
+// PDF出力ボタン: ヘッダと同系の青でプライマリとして強調
+.btn-pdf {
+  --mdc-filled-button-container-color: #2563eb;
+  --mdc-filled-button-label-text-color: #fff;
+  background-color: #2563eb !important;
+  color: #fff !important;
+
+  .mat-icon {
+    color: #fff !important;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #1d4ed8 !important;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+  }
+}
+
+.saved-ic {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  color: #16a34a; // 保存済みは控えめなグリーン
+}
+
 // セル内の入力欄（テーブルに馴染むよう枠線なし・幅いっぱい）
 .cell {
   width: 100%;
