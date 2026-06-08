@@ -2,6 +2,9 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# パッケージは src/backend にあるため import パスを通す（Render等でも有効）
+ENV PYTHONPATH=/app/src
+
 # WeasyPrint の実行に必要なネイティブライブラリと日本語フォント
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango-1.0-0 \
@@ -20,4 +23,6 @@ RUN poetry install --without dev --no-root --no-interaction --no-ansi
 
 COPY src/ ./src/
 
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# 本番: PORT環境変数（Render等が指定）にバインド。未指定なら8000。
+# ローカル開発のホットリロードは docker-compose の command で上書きする。
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
