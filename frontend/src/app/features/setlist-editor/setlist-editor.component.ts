@@ -10,7 +10,7 @@ import {
   CdkDragDrop,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,7 +31,7 @@ import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
   imports: [
     ReactiveFormsModule,
     DragDropModule,
-    MatToolbarModule,
+    MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
