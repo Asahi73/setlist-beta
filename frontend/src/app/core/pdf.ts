@@ -33,11 +33,6 @@ function totalDuration(s: Setlist): string {
   return t > 0 ? formatDuration(t) : '-';
 }
 
-function excitementStars(level: number): string {
-  if (level <= 0) return '';
-  return '★'.repeat(level) + '☆'.repeat(5 - level);
-}
-
 function metaLine(s: Setlist): string {
   const parts: string[] = [];
   if (s.slot_time.trim()) parts.push(`持ち時間 ${s.slot_time}`);
@@ -222,7 +217,7 @@ function buildMono(doc: JsPDF, autoTable: AutoTable, s: Setlist): void {
       body.push([
         {
           content: r.title || 'アンコール',
-          colSpan: 6,
+          colSpan: 5,
           styles: { halign: 'center', fontStyle: 'bold', fillColor: [238, 238, 238] },
         },
       ]);
@@ -240,27 +235,20 @@ function buildMono(doc: JsPDF, autoTable: AutoTable, s: Setlist): void {
             cellPadding: { top: 1.8, bottom: 1.8, left: 0.5, right: 0.5 },
           },
         },
-        { content: r.title || 'MC', colSpan: 4, styles: { textColor: [85, 85, 85] } },
+        { content: r.title || 'MC', colSpan: 3, styles: { textColor: [85, 85, 85] } },
         { content: r.note, styles: { textColor: [85, 85, 85] } },
       ]);
       continue;
     }
     no += 1;
     kinds.push('song');
-    body.push([
-      String(no),
-      r.title,
-      r.key,
-      formatDuration(r.duration_sec),
-      excitementStars(r.excitement),
-      r.note,
-    ]);
+    body.push([String(no), r.title, r.key, formatDuration(r.duration_sec), r.note]);
   }
 
   autoTable(doc, {
     startY: 33,
     margin: { left: margin, right: margin, top: 15, bottom: 15 },
-    head: [['#', '曲名', 'Key', '時間', '盛り上がり', '備考']],
+    head: [['#', '曲名', 'Key', '時間', '備考']],
     body,
     theme: 'plain',
     styles: {
@@ -282,8 +270,7 @@ function buildMono(doc: JsPDF, autoTable: AutoTable, s: Setlist): void {
       0: { cellWidth: 8 },
       2: { cellWidth: 16 },
       3: { cellWidth: 18 },
-      4: { cellWidth: 30 },
-      5: { cellWidth: 40 },
+      4: { cellWidth: 45 },
     },
     didDrawCell: (data: any) => {
       if (data.section !== 'body') return;

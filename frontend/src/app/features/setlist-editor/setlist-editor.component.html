@@ -49,7 +49,7 @@
           <mat-icon>mic</mat-icon> MCを追加
         </button>
         <button mat-stroked-button (click)="addEncore()">
-          <mat-icon>replay</mat-icon> アンコールを追加
+          <mat-icon>celebration</mat-icon> アンコールを追加
         </button>
 
         <div class="ml-auto flex items-center gap-2">
@@ -62,7 +62,7 @@
             <mat-icon>palette</mat-icon> PDF（蛍光色）
           </button>
           <button mat-flat-button class="btn-pdf" (click)="exportPdf('mono')" [disabled]="generating()">
-            <mat-icon>print</mat-icon> PDF（白黒）
+            <mat-icon>description</mat-icon> PDF（白黒）
           </button>
         </div>
       </div>
@@ -88,7 +88,6 @@
               <th class="w-20">Key</th>
               <th class="w-20">BPM</th>
               <th class="w-24">時間</th>
-              <th class="w-32">盛り上がり</th>
               <th class="min-w-40">備考</th>
               <th class="w-12"></th>
             </tr>
@@ -115,7 +114,7 @@
 
                 @if (isEncore(i)) {
                   <!-- アンコール見出し行（全幅） -->
-                  <td colspan="6">
+                  <td colspan="5">
                     <input
                       class="cell text-center font-bold"
                       formControlName="title"
@@ -123,8 +122,8 @@
                     />
                   </td>
                 } @else if (isMc(i)) {
-                  <!-- MC行: 曲名〜盛り上がりを結合してトーク内容を入力 -->
-                  <td colspan="5">
+                  <!-- MC行: 曲名〜時間を結合してトーク内容を入力 -->
+                  <td colspan="4">
                     <input class="cell" formControlName="title" placeholder="MCの内容（話すこと・煽りなど）" />
                   </td>
                   <td><input class="cell" formControlName="note" placeholder="備考" /></td>
@@ -133,13 +132,6 @@
                   <td><input class="cell" formControlName="key" placeholder="C" /></td>
                   <td><input class="cell" type="number" min="0" formControlName="bpm" placeholder="BPM" /></td>
                   <td><input class="cell" formControlName="duration" placeholder="4:30" /></td>
-                  <td>
-                    <select class="cell" formControlName="excitement">
-                      @for (lv of excitementLevels; track lv) {
-                        <option [value]="lv">{{ lv === 0 ? '-' : '★'.repeat(lv) }}</option>
-                      }
-                    </select>
-                  </td>
                   <td><input class="cell" formControlName="note" placeholder="備考" /></td>
                 }
 

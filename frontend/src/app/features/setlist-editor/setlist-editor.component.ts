@@ -50,7 +50,6 @@ export class SetlistEditorComponent implements OnInit {
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
 
-  readonly excitementLevels = [0, 1, 2, 3, 4, 5];
   // PDF生成中（フォント遅延ロード含む）
   readonly generating = signal(false);
   // 自動保存済みかどうか（保存ボタンは廃止）
@@ -91,7 +90,6 @@ export class SetlistEditorComponent implements OnInit {
       key: [song?.key ?? ''],
       bpm: [song?.bpm ?? 0],
       duration: [formatDuration(song?.duration_sec ?? 0)],
-      excitement: [song?.excitement ?? 0],
       note: [song?.note ?? ''],
     });
   }
@@ -177,7 +175,6 @@ export class SetlistEditorComponent implements OnInit {
         key: row.get('key')?.value ?? '',
         bpm: Number(row.get('bpm')?.value) || 0,
         duration_sec: parseDuration(row.get('duration')?.value ?? ''),
-        excitement: row.get('excitement')?.value ?? 0,
         note: row.get('note')?.value ?? '',
       })),
     };
@@ -200,7 +197,7 @@ export class SetlistEditorComponent implements OnInit {
         this.dialog.open(PdfPreviewDialogComponent, {
           data: {
             blob,
-            filename: mode === 'color' ? 'setlist-color.pdf' : 'setlist.pdf',
+            filename: this.pdfFilename(setlist.title),
             modeLabel: mode === 'color' ? '蛍光色' : '白黒',
           },
           maxWidth: '95vw',
@@ -210,5 +207,14 @@ export class SetlistEditorComponent implements OnInit {
         this.snackBar.open('PDF出力に失敗しました', undefined, { duration: 3000 }),
       )
       .finally(() => this.generating.set(false));
+  }
+
+  // PDFのダウンロード名は「セットリスト名.pdf」。ファイル名に使えない文字は除去する。
+  private pdfFilename(title: string): string {
+    const safe = title
+      .replace(/[\\/:*?"<>|]/g, '') // OSで禁止される文字
+      .replace(/\s+/g, ' ')
+      .trim();
+    return `${safe || 'セットリスト'}.pdf`;
   }
 }
