@@ -1,14 +1,25 @@
 <main class="page">
   <div class="max-w-6xl mx-auto px-4 py-6" [formGroup]="form">
     <section class="card">
+      <!-- セクション見出し -->
+      <div class="card-head">
+        <span class="card-head-ic"><mat-icon>queue_music</mat-icon></span>
+        <div class="card-head-text">
+          <h2 class="card-head-title">セットリスト情報</h2>
+          <p class="card-head-sub">ライブ名と持ち時間を入力してください</p>
+        </div>
+      </div>
+
       <!-- セットリスト名 / 持ち時間 -->
       <div class="flex flex-wrap gap-x-4">
-        <mat-form-field class="w-full md:flex-1 md:min-w-64">
+        <mat-form-field appearance="outline" class="w-full md:flex-1 md:min-w-64">
           <mat-label>セットリスト名</mat-label>
+          <mat-icon matPrefix class="field-ic">event</mat-icon>
           <input matInput formControlName="title" placeholder="例: 6/20 梅雨コン" />
         </mat-form-field>
-        <mat-form-field class="w-full md:w-48">
+        <mat-form-field appearance="outline" class="w-full md:w-48">
           <mat-label>持ち時間</mat-label>
+          <mat-icon matPrefix class="field-ic">schedule</mat-icon>
           <input matInput formControlName="slot_time" placeholder="例: 30分" />
         </mat-form-field>
       </div>

@@ -1,5 +1,7 @@
 // --- ヘッダ（青系グラデーション・白文字。ユーザー指定でモノクロ例外）---
 .app-header {
+  position: relative;
+  z-index: 30; // ドロワーをボディ上に重ねるため
   background: linear-gradient(100deg, #1e40af 0%, #1d4ed8 45%, #2563eb 100%);
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
@@ -71,4 +73,149 @@
   font-size: 18px;
   width: 18px;
   height: 18px;
+}
+
+// スマホ専用UI（ハンバーガー・ドロワー・バックドロップ）は md(768px) 以上で非表示。
+// コンポーネントスコープのSCSSは詳細度が上がり Tailwind の md:hidden に勝つため、
+// ここで明示的にメディアクエリで隠す。
+@media (min-width: 768px) {
+  .menu-toggle,
+  .mobile-nav,
+  .mobile-backdrop {
+    display: none !important;
+  }
+}
+
+// --- スマホ用ハンバーガーボタン ---
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  &.menu-open {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// --- スマホ用ドロワー（ヘッダ直下にボディへオーバーレイ）---
+.mobile-nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px 16px;
+  // ボディに重なるため不透明な背景にする（ヘッダと同系の濃紺）
+  background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+
+  // 閉じている状態（上方向にスライドして隠れる）。アニメーション対象。
+  transform: translateY(-12px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease,
+    visibility 0.22s;
+
+  &.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+// ドロワー背景（薄暗いオーバーレイ）。フェードで開閉する。
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.22s ease,
+    visibility 0.22s;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+.m-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.m-nav-label {
+  flex: 1;
+}
+
+.m-nav-active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 700;
+}
+
+.m-nav-soon {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: default;
+}
+
+// 「準備中」バッジ（タップ操作ではツールチップが効かないため明示ラベルで示す）
+.soon-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.85);
 }
