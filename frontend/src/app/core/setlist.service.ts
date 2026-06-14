@@ -1,8 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import { API_BASE } from './api.config';
-import { PdfMode, Setlist } from './models';
-import { AuthService } from './auth.service';
+import { Setlist } from './models';
 
 const STORAGE_KEY = 'setlist_data';
 
@@ -23,8 +21,6 @@ function sampleSetlist(): Setlist {
 
 @Injectable({ providedIn: 'root' })
 export class SetlistService {
-  private auth = inject(AuthService);
-
   // セットリストはクライアント(localStorage)に保持する
   load(): Setlist {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -40,21 +36,5 @@ export class SetlistService {
 
   save(setlist: Setlist): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(setlist));
-  }
-
-  // PDFは編集中のセットリストをそのまま送って生成する（サーバーは保存しない）
-  async downloadPdf(mode: PdfMode, setlist: Setlist): Promise<Blob> {
-    const res = await fetch(`${API_BASE}/setlist/pdf?mode=${mode}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.auth.token() ?? ''}`,
-      },
-      body: JSON.stringify(setlist),
-    });
-    if (!res.ok) {
-      throw new Error('PDF生成に失敗しました: ' + res.status);
-    }
-    return res.blob();
   }
 }

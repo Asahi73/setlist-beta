@@ -22,11 +22,6 @@
         <mat-icon class="nav-ic">settings</mat-icon> 設定
       </button>
     </nav>
-
-    <!-- ログアウト -->
-    <button type="button" class="nav-link ml-auto shrink-0" (click)="logout()">
-      <mat-icon class="nav-ic">logout</mat-icon> ログアウト
-    </button>
   </div>
 </header>
 
@@ -58,15 +53,10 @@
         </button>
 
         <div class="ml-auto flex items-center gap-2">
-          @if (generating()) {
-            <span class="flex items-center gap-1 text-sm text-gray-500">
-              <mat-spinner diameter="18"></mat-spinner> 生成中…
-            </span>
-          }
-          <button mat-flat-button class="btn-pdf" (click)="exportPdf('color')" [disabled]="generating()">
+          <button mat-flat-button class="btn-pdf" (click)="exportPdf('color')">
             <mat-icon>palette</mat-icon> PDF（蛍光色）
           </button>
-          <button mat-flat-button class="btn-pdf" (click)="exportPdf('mono')" [disabled]="generating()">
+          <button mat-flat-button class="btn-pdf" (click)="exportPdf('mono')">
             <mat-icon>print</mat-icon> PDF（白黒）
           </button>
         </div>
