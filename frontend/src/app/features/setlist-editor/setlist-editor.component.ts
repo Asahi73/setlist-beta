@@ -26,9 +26,9 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { SetlistService } from '../../core/setlist.service';
 import { PdfMode, Setlist, SongRow } from '../../core/models';
-import { generateSetlistPdf } from '../../core/pdf';
+import { generateSetlistPdf } from './pdf';
 import { PrimaryButtonDirective } from '../../shared/primary-button.directive';
-import { formatDuration, parseDuration } from './duration.util';
+import { formatDuration, parseDuration } from './duration';
 import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
 
 @Component({

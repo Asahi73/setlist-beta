@@ -33,7 +33,7 @@
   - localStorage が空のときはサンプル（入力例）から開始する（`SetlistService`）
   - 将来、複数端末同期やチーム共有が必要になったらフルスタック版 `setlist-app` 側で対応する
 - **PDFはバックエンドを使わずクライアントで「本物のPDF」を生成する**（jsPDF + autoTable）。
-  - `frontend/src/app/core/pdf.ts` が color/mono を組み立てて Blob を返す
+  - `frontend/src/app/features/setlist-editor/pdf.ts` が color/mono を組み立てて Blob を返す
     - `buildSetlistPdfDoc(...)` は jsPDF/autoTable を引数で受け取る純粋関数（node でテスト可能）
     - `generateSetlistPdf(...)` がブラウザ用ラッパー。jsPDF/autoTable と日本語フォントを**遅延ロード**
   - 日本語フォント Noto Sans JP Regular/Bold を `frontend/public/fonts/*.ttf` に配置し、

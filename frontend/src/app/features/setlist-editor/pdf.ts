@@ -8,7 +8,7 @@
 // （初期表示には影響しない）。
 
 import type { jsPDF as JsPDF } from 'jspdf';
-import { PdfMode, Setlist } from './models';
+import { PdfMode, Setlist } from '../../core/models';
 
 const NEON: [number, number, number] = [0xeb, 0xff, 0x00];
 const WHITE: [number, number, number] = [255, 255, 255];
