@@ -81,20 +81,21 @@ export function buildSetlistPdfDoc(
 function buildColor(doc: JsPDF, autoTable: AutoTable, s: Setlist, _fonts: PdfFonts): void {
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const margin = 10;
+  // 本文の左右マージン（白フチ FRAME より内側に取り、黒シートの中に収める）
+  const margin = 15;
 
-  // 1ページ目の背景（黒）を先に塗ってからヘッダを描く
+  // 1ページ目の背景（白フチ付きの黒シート）を先に塗ってからヘッダを描く
   paintBlack(doc, pageW, pageH);
 
   // ヘッダ: タイトル(蛍光)＋メタ(白)
   doc.setFont(FONT, 'bold');
   doc.setFontSize(26);
   doc.setTextColor(...NEON);
-  doc.text(s.title || 'セットリスト', margin, 20);
+  doc.text(s.title || 'セットリスト', margin, 22);
   doc.setFont(FONT, 'normal');
   doc.setFontSize(11);
   doc.setTextColor(...WHITE);
-  doc.text(metaLine(s), margin, 27);
+  doc.text(metaLine(s), margin, 29);
 
   // 行データと種別を並行配列で持つ（didDrawCell で種別判定に使う）
   const kinds: string[] = [];
@@ -143,8 +144,8 @@ function buildColor(doc: JsPDF, autoTable: AutoTable, s: Setlist, _fonts: PdfFon
   }
 
   autoTable(doc, {
-    startY: 32,
-    margin: { left: margin, right: margin, top: 12, bottom: 10 },
+    startY: 34,
+    margin: { left: margin, right: margin, top: 16, bottom: 14 },
     body,
     theme: 'plain',
     styles: {
@@ -189,9 +190,12 @@ function buildColor(doc: JsPDF, autoTable: AutoTable, s: Setlist, _fonts: PdfFon
   });
 }
 
+// ステージ用の背景。ページ全面ではなく四隅に白フチ(FRAME)を残して黒シートを描く。
+const FRAME = 6; // 白フチの幅(mm)
+
 function paintBlack(doc: JsPDF, w: number, h: number): void {
   doc.setFillColor(...BLACK);
-  doc.rect(0, 0, w, h, 'F');
+  doc.rect(FRAME, FRAME, w - FRAME * 2, h - FRAME * 2, 'F');
 }
 
 // ---- mono（印刷用・白地に黒、列名あり）--------------------------------------
