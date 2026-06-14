@@ -13,38 +13,30 @@ import {
   DragDropModule,
 } from '@angular/cdk/drag-drop';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 
 import { SetlistService } from '../../core/setlist.service';
 import { PdfMode, Setlist, SongRow } from '../../core/models';
 import { generateSetlistPdf } from './pdf';
-import { PrimaryButtonDirective } from '../../shared/primary-button.directive';
 import { formatDuration, parseDuration } from './duration';
 import { PdfPreviewDialog } from './pdf-preview-dialog';
+import { SetlistToolbar } from './setlist-toolbar';
 
 @Component({
   selector: 'app-setlist-editor',
   imports: [
     ReactiveFormsModule,
     DragDropModule,
-    MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatButtonModule,
-    MatMenuModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    PrimaryButtonDirective,
+    SetlistToolbar,
   ],
   templateUrl: './setlist-editor.html',
   styleUrl: './setlist-editor.scss',
