@@ -33,4 +33,9 @@ export class SetlistService {
   save(setlist: Setlist): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(setlist));
   }
+
+  // 保存データを削除する（localStorageごと消す）。以降の load() はサンプルに戻る。
+  clear(): void {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 }
