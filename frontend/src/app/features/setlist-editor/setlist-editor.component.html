@@ -45,7 +45,7 @@
         @if (isMobile()) {
           <!-- スマホ: 1つの「追加」ボタンにまとめ、メニューで種類を選ぶ -->
           <button mat-stroked-button [matMenuTriggerFor]="addMenu">
-            <mat-icon>add</mat-icon> 追加 <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+            追加 <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
           </button>
           <mat-menu #addMenu="matMenu">
             <button mat-menu-item (click)="addSong()">
