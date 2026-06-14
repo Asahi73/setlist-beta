@@ -7,7 +7,7 @@ const STORAGE_KEY = 'setlist_data';
 // localStorageが空のときの初期サンプル（入力例）
 function sampleSetlist(): Setlist {
   return {
-    title: 'サンプルライブ',
+    title: '6/20 梅雨コン',
     slot_time: '30分',
     songs: [
       { kind: 'song', title: 'オープニングSE', key: 'E', bpm: 140, duration_sec: 180, note: '暗転' },

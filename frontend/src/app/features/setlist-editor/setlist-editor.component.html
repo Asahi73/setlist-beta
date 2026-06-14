@@ -10,7 +10,7 @@
     <!-- ナビ（将来機能・現状は遷移しない） -->
     <nav class="hidden md:flex items-center gap-1 ml-3">
       <button type="button" class="nav-link nav-active">
-        <mat-icon class="nav-ic">edit</mat-icon> 編集
+        <mat-icon class="nav-ic">edit</mat-icon> 作成
       </button>
       <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
         <mat-icon class="nav-ic">library_music</mat-icon> セットリスト一覧
@@ -32,7 +32,7 @@
       <div class="flex flex-wrap gap-x-4">
         <mat-form-field class="w-full md:flex-1 md:min-w-64">
           <mat-label>セットリスト名</mat-label>
-          <input matInput formControlName="title" placeholder="例: 6/15 渋谷LIVE" />
+          <input matInput formControlName="title" placeholder="例: 6/20 梅雨コン" />
         </mat-form-field>
         <mat-form-field class="w-full md:w-48">
           <mat-label>持ち時間</mat-label>
@@ -132,7 +132,7 @@
                   <input
                     class="cell m-title flex-1"
                     formControlName="title"
-                    [placeholder]="isMc(i) ? 'MCの内容（話すこと・煽りなど）' : '曲名'"
+                    [placeholder]="isMc(i) ? 'MCの内容' : '曲名'"
                   />
                   <button
                     type="button"
@@ -232,7 +232,7 @@
                 } @else if (isMc(i)) {
                   <!-- MC行: 曲名〜時間を結合してトーク内容を入力 -->
                   <td colspan="4">
-                    <input class="cell" formControlName="title" placeholder="MCの内容（話すこと・煽りなど）" />
+                    <input class="cell" formControlName="title" placeholder="MCの内容" />
                   </td>
                   <td><input class="cell" formControlName="note" placeholder="備考" /></td>
                 } @else {
