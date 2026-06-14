@@ -1,0 +1,46 @@
+<main class="page">
+  <div class="max-w-6xl mx-auto px-4 py-6" [formGroup]="form">
+    <section class="card">
+      <!-- セットリスト名 / 持ち時間 -->
+      <div class="flex flex-wrap gap-x-4">
+        <mat-form-field class="w-full md:flex-1 md:min-w-64">
+          <mat-label>セットリスト名</mat-label>
+          <input matInput formControlName="title" placeholder="例: 6/20 梅雨コン" />
+        </mat-form-field>
+        <mat-form-field class="w-full md:w-48">
+          <mat-label>持ち時間</mat-label>
+          <input matInput formControlName="slot_time" placeholder="例: 30分" />
+        </mat-form-field>
+      </div>
+
+      <!-- ツールバー: 項目追加 / リセット / PDF出力 -->
+      <app-setlist-toolbar
+        [isMobile]="isMobile()"
+        [generating]="generating()"
+        (addSong)="addSong()"
+        (addMc)="addMc()"
+        (addEncore)="addEncore()"
+        (reset)="resetAll()"
+        (exportPdf)="exportPdf($event)" />
+
+      <!-- ステータス -->
+      <div class="flex justify-end items-center gap-1 text-sm text-gray-500 mb-2">
+        @if (saved()) {
+          <mat-icon class="saved-ic">check_circle</mat-icon>
+          <span>保存済み</span>
+          <span class="opacity-40 mx-1">/</span>
+        }
+        <span>全{{ songCount() }}曲 / 合計 {{ totalDuration() }}</span>
+      </div>
+
+      <!-- 曲リスト（PC=テーブル / スマホ=カード）。表示は SongList に委譲 -->
+      <app-song-list
+        [songs]="songs"
+        [isMobile]="isMobile()"
+        [expandedRows]="expandedRows()"
+        (toggleExpand)="toggleExpand($event)"
+        (removeRow)="removeRow($event)"
+        (reorder)="drop($event)" />
+    </section>
+  </div>
+</main>
