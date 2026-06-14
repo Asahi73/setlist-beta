@@ -75,6 +75,17 @@
   height: 18px;
 }
 
+// スマホ専用UI（ハンバーガー・ドロワー・バックドロップ）は md(768px) 以上で非表示。
+// コンポーネントスコープのSCSSは詳細度が上がり Tailwind の md:hidden に勝つため、
+// ここで明示的にメディアクエリで隠す。
+@media (min-width: 768px) {
+  .menu-toggle,
+  .mobile-nav,
+  .mobile-backdrop {
+    display: none !important;
+  }
+}
+
 // --- スマホ用ハンバーガーボタン ---
 .menu-toggle {
   display: inline-flex;
