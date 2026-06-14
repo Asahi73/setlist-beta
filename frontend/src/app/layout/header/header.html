@@ -7,7 +7,7 @@
       <span class="beta-badge">BETA</span>
     </div>
 
-    <!-- ナビ（将来機能・現状は遷移しない） -->
+    <!-- ナビ（PC・将来機能・現状は遷移しない） -->
     <nav class="hidden md:flex items-center gap-1 ml-3">
       <button type="button" class="nav-link nav-active">
         <mat-icon class="nav-ic">edit</mat-icon> 作成
@@ -22,5 +22,41 @@
         <mat-icon class="nav-ic">settings</mat-icon> 設定
       </button>
     </nav>
+
+    <!-- ハンバーガー（スマホのみ）。タップでナビをドロワー表示する -->
+    <button
+      type="button"
+      class="menu-toggle md:hidden ml-auto"
+      (click)="toggleMenu()"
+      [class.menu-open]="menuOpen()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-label="メニューを開閉">
+      <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
+    </button>
   </div>
+
+  <!-- スマホ用ドロワー（準備中の機能はバッジで明示する） -->
+  @if (menuOpen()) {
+    <nav class="mobile-nav md:hidden">
+      <button type="button" class="m-nav-link m-nav-active">
+        <mat-icon class="nav-ic">edit</mat-icon>
+        <span class="m-nav-label">作成</span>
+      </button>
+      <button type="button" class="m-nav-link m-nav-soon" disabled>
+        <mat-icon class="nav-ic">library_music</mat-icon>
+        <span class="m-nav-label">セットリスト一覧</span>
+        <span class="soon-badge">準備中</span>
+      </button>
+      <button type="button" class="m-nav-link m-nav-soon" disabled>
+        <mat-icon class="nav-ic">queue_music</mat-icon>
+        <span class="m-nav-label">曲ライブラリ</span>
+        <span class="soon-badge">準備中</span>
+      </button>
+      <button type="button" class="m-nav-link m-nav-soon" disabled>
+        <mat-icon class="nav-ic">settings</mat-icon>
+        <span class="m-nav-label">設定</span>
+        <span class="soon-badge">準備中</span>
+      </button>
+    </nav>
+  }
 </header>
