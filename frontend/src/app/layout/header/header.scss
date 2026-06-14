@@ -1,5 +1,7 @@
 // --- ヘッダ（青系グラデーション・白文字。ユーザー指定でモノクロ例外）---
 .app-header {
+  position: relative;
+  z-index: 30; // ドロワーをボディ上に重ねるため
   background: linear-gradient(100deg, #1e40af 0%, #1d4ed8 45%, #2563eb 100%);
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
@@ -102,14 +104,58 @@
   }
 }
 
-// --- スマホ用ドロワー（ヘッダ直下に展開）---
+// --- スマホ用ドロワー（ヘッダ直下にボディへオーバーレイ）---
 .mobile-nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 12px 14px;
-  background: rgba(0, 0, 0, 0.12);
+  padding: 10px 12px 16px;
+  // ボディに重なるため不透明な背景にする（ヘッダと同系の濃紺）
+  background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+
+  // 閉じている状態（上方向にスライドして隠れる）。アニメーション対象。
+  transform: translateY(-12px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease,
+    visibility 0.22s;
+
+  &.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+// ドロワー背景（薄暗いオーバーレイ）。フェードで開閉する。
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.22s ease,
+    visibility 0.22s;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 }
 
 .m-nav-link {

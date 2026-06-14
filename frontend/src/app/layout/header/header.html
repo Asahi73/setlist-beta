@@ -35,28 +35,33 @@
     </button>
   </div>
 
-  <!-- スマホ用ドロワー（準備中の機能はバッジで明示する） -->
-  @if (menuOpen()) {
-    <nav class="mobile-nav md:hidden">
-      <button type="button" class="m-nav-link m-nav-active">
-        <mat-icon class="nav-ic">edit</mat-icon>
-        <span class="m-nav-label">作成</span>
-      </button>
-      <button type="button" class="m-nav-link m-nav-soon" disabled>
-        <mat-icon class="nav-ic">library_music</mat-icon>
-        <span class="m-nav-label">セットリスト一覧</span>
-        <span class="soon-badge">準備中</span>
-      </button>
-      <button type="button" class="m-nav-link m-nav-soon" disabled>
-        <mat-icon class="nav-ic">queue_music</mat-icon>
-        <span class="m-nav-label">曲ライブラリ</span>
-        <span class="soon-badge">準備中</span>
-      </button>
-      <button type="button" class="m-nav-link m-nav-soon" disabled>
-        <mat-icon class="nav-ic">settings</mat-icon>
-        <span class="m-nav-label">設定</span>
-        <span class="soon-badge">準備中</span>
-      </button>
-    </nav>
-  }
+  <!-- スマホ用ドロワー（ボディ上にオーバーレイ表示）。開閉はクラスでアニメーションさせる -->
+  <nav class="mobile-nav md:hidden" [class.open]="menuOpen()" [attr.aria-hidden]="!menuOpen()">
+    <button type="button" class="m-nav-link m-nav-active">
+      <mat-icon class="nav-ic">edit</mat-icon>
+      <span class="m-nav-label">作成</span>
+    </button>
+    <button type="button" class="m-nav-link m-nav-soon" disabled>
+      <mat-icon class="nav-ic">library_music</mat-icon>
+      <span class="m-nav-label">セットリスト一覧</span>
+      <span class="soon-badge">準備中</span>
+    </button>
+    <button type="button" class="m-nav-link m-nav-soon" disabled>
+      <mat-icon class="nav-ic">queue_music</mat-icon>
+      <span class="m-nav-label">曲ライブラリ</span>
+      <span class="soon-badge">準備中</span>
+    </button>
+    <button type="button" class="m-nav-link m-nav-soon" disabled>
+      <mat-icon class="nav-ic">settings</mat-icon>
+      <span class="m-nav-label">設定</span>
+      <span class="soon-badge">準備中</span>
+    </button>
+  </nav>
 </header>
+
+<!-- ドロワー背景（スマホ・開いている間だけ。タップで閉じる） -->
+<div
+  class="mobile-backdrop md:hidden"
+  [class.open]="menuOpen()"
+  (click)="closeMenu()"
+  aria-hidden="true"></div>

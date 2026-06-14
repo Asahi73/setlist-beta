@@ -20,4 +20,8 @@ export class Header {
   toggleMenu(): void {
     this.menuOpen.update((open) => !open);
   }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
+  }
 }
