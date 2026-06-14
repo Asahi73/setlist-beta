@@ -5,8 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { PdfMode } from '../../core/models';
-import { PrimaryButtonDirective } from '../../shared/primary-button.directive';
+import { PdfMode } from '../../../core/models';
+import { PrimaryButtonDirective } from '../../../shared/primary-button.directive';
 
 /**
  * セットリスト編集ツールバー。項目追加（曲/MC/アンコール）・リセット・PDF出力の
