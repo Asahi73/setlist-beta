@@ -54,6 +54,46 @@ body {
   }
 }
 
+// セカンダリ操作（追加系）の「ソフトな青」。プライマリ(filled青)ほど主張させず、
+// しかし無機質な枠線だけのボタンより視認性を上げるための薄い青背景。
+// 既存の .mat-mdc-outlined-button.mat-unthemed の色上書き(0,2,0)に勝つよう、
+// 同等以上の詳細度（クラス2つ）＋ソース順で確実に上書きする。
+.mat-mdc-outlined-button.app-soft-btn,
+.mat-mdc-button.app-soft-btn {
+  --mdc-outlined-button-outline-color: #bfdbfe;
+  background-color: #eff6ff !important; // primary-subtle
+  border-color: #bfdbfe !important;
+  color: #1d4ed8 !important;
+
+  .mat-icon {
+    color: #3b82f6 !important;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #dbeafe !important;
+    border-color: #93c5fd !important;
+  }
+}
+
+// リセット（破壊的操作）のソフト版。背景色は付けつつ、安全な操作と誤認しないよう
+// 青ではなく控えめな赤系にする。
+.mat-mdc-outlined-button.app-soft-danger-btn,
+.mat-mdc-button.app-soft-danger-btn {
+  --mdc-outlined-button-outline-color: #fecaca;
+  background-color: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #b91c1c !important;
+
+  .mat-icon {
+    color: #ef4444 !important;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #fee2e2 !important;
+    border-color: #fca5a5 !important;
+  }
+}
+
 // プライマリアクション（青・filled）。appPrimaryButton ディレクティブが付与する。
 // カラールール「青はプライマリのみ」をここ一箇所に集約する。
 // Material のボタンスタイルが後勝ちするため !important で確実に上書きする。
