@@ -1,30 +1,3 @@
-<header class="app-header">
-  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center gap-3">
-    <!-- ブランド -->
-    <div class="flex items-center gap-2 shrink-0">
-      <mat-icon class="brand-ic">queue_music</mat-icon>
-      <span class="font-bold text-lg tracking-tight">セットリスト管理</span>
-      <span class="beta-badge">BETA</span>
-    </div>
-
-    <!-- ナビ（将来機能・現状は遷移しない） -->
-    <nav class="hidden md:flex items-center gap-1 ml-3">
-      <button type="button" class="nav-link nav-active">
-        <mat-icon class="nav-ic">edit</mat-icon> 作成
-      </button>
-      <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
-        <mat-icon class="nav-ic">library_music</mat-icon> セットリスト一覧
-      </button>
-      <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
-        <mat-icon class="nav-ic">queue_music</mat-icon> 曲ライブラリ
-      </button>
-      <button type="button" class="nav-link nav-soon" matTooltip="準備中" matTooltipPosition="below">
-        <mat-icon class="nav-ic">settings</mat-icon> 設定
-      </button>
-    </nav>
-  </div>
-</header>
-
 <main class="page">
   <div class="max-w-6xl mx-auto px-4 py-6" [formGroup]="form">
     <section class="card">
@@ -80,10 +53,10 @@
               <mat-spinner diameter="18"></mat-spinner> 生成中…
             </span>
           }
-          <button mat-flat-button class="btn-pdf w-full md:w-auto whitespace-nowrap" (click)="exportPdf('color')" [disabled]="generating()">
+          <button mat-flat-button appPrimaryButton class="w-full md:w-auto whitespace-nowrap" (click)="exportPdf('color')" [disabled]="generating()">
             <mat-icon>palette</mat-icon> PDF（蛍光色）
           </button>
-          <button mat-flat-button class="btn-pdf w-full md:w-auto whitespace-nowrap" (click)="exportPdf('mono')" [disabled]="generating()">
+          <button mat-flat-button appPrimaryButton class="w-full md:w-auto whitespace-nowrap" (click)="exportPdf('mono')" [disabled]="generating()">
             <mat-icon>description</mat-icon> PDF（白黒）
           </button>
         </div>

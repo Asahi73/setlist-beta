@@ -27,6 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SetlistService } from '../../core/setlist.service';
 import { PdfMode, Setlist, SongRow } from '../../core/models';
 import { generateSetlistPdf } from '../../core/pdf';
+import { PrimaryButtonDirective } from '../../shared/primary-button.directive';
 import { formatDuration, parseDuration } from './duration.util';
 import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
 
@@ -43,6 +44,7 @@ import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
     MatMenuModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    PrimaryButtonDirective,
   ],
   templateUrl: './setlist-editor.component.html',
   styleUrl: './setlist-editor.component.scss',
