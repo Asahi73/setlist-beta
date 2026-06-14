@@ -32,10 +32,14 @@
   サーバーは存在しない（完全ステートレス）。リロードにも耐える。
   - localStorage が空のときはサンプル（入力例）から開始する（`SetlistService`）
   - 将来、複数端末同期やチーム共有が必要になったらフルスタック版 `setlist-app` 側で対応する
-- **PDFはバックエンドを使わずクライアントで生成する**。
-  - `frontend/src/app/core/pdf-html.ts` が color/mono のHTML/CSSを組み立てる
-    （もとは backend の WeasyPrint テンプレートを移植したもの）
-  - プレビューダイアログの iframe をそのまま `window.print()` し、ユーザーが「PDFに保存」
+- **PDFはバックエンドを使わずクライアントで「本物のPDF」を生成する**（jsPDF + autoTable）。
+  - `frontend/src/app/core/pdf.ts` が color/mono を組み立てて Blob を返す
+    - `buildSetlistPdfDoc(...)` は jsPDF/autoTable を引数で受け取る純粋関数（node でテスト可能）
+    - `generateSetlistPdf(...)` がブラウザ用ラッパー。jsPDF/autoTable と日本語フォントを**遅延ロード**
+  - 日本語フォント Noto Sans JP Regular/Bold を `frontend/public/fonts/*.ttf` に配置し、
+    PDF生成時のみ fetch → base64 で jsPDF に登録（初期表示には影響しない）
+  - **`window.print()` 方式は不採用**。印刷ダイアログ依存（ヘッダ/フッタ混入・背景未印刷・
+    Safariのiframe印刷不具合・倍率依存）で全環境一致の出力にならないため
 - **認証ゲートなし（オープンベータ）**。ログイン画面・authGuard は撤去済み。
 
 ## デプロイ規約
