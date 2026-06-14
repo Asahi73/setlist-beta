@@ -13,54 +13,15 @@
         </mat-form-field>
       </div>
 
-      <!-- ツールバー: 左=項目追加 / 右=PDF出力（青・プライマリ） -->
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        @if (isMobile()) {
-          <!-- スマホ: 1つの「追加」ボタンにまとめ、メニューで種類を選ぶ -->
-          <button mat-stroked-button [matMenuTriggerFor]="addMenu">
-            追加 <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
-          </button>
-          <mat-menu #addMenu="matMenu">
-            <button mat-menu-item (click)="addSong()">
-              <mat-icon>add</mat-icon> <span>曲</span>
-            </button>
-            <button mat-menu-item (click)="addMc()">
-              <mat-icon>mic</mat-icon> <span>MC</span>
-            </button>
-            <button mat-menu-item (click)="addEncore()">
-              <mat-icon>celebration</mat-icon> <span>アンコール</span>
-            </button>
-          </mat-menu>
-        } @else {
-          <!-- PC: 種類ごとに個別ボタン -->
-          <button mat-stroked-button (click)="addSong()">
-            <mat-icon>add</mat-icon> 曲を追加
-          </button>
-          <button mat-stroked-button (click)="addMc()">
-            <mat-icon>mic</mat-icon> MCを追加
-          </button>
-          <button mat-stroked-button (click)="addEncore()">
-            <mat-icon>celebration</mat-icon> アンコールを追加
-          </button>
-        }
-        <button mat-stroked-button color="warn" (click)="resetAll()" matTooltip="保存データを削除して初期状態に戻す">
-          <mat-icon>restart_alt</mat-icon> リセット
-        </button>
-
-        <div class="w-full md:w-auto md:ml-auto flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-2">
-          @if (generating()) {
-            <span class="flex items-center gap-1 text-sm text-gray-500">
-              <mat-spinner diameter="18"></mat-spinner> 生成中…
-            </span>
-          }
-          <button mat-flat-button appPrimaryButton class="w-full md:w-auto whitespace-nowrap" (click)="exportPdf('color')" [disabled]="generating()">
-            <mat-icon>palette</mat-icon> PDF（蛍光色）
-          </button>
-          <button mat-flat-button appPrimaryButton class="w-full md:w-auto whitespace-nowrap" (click)="exportPdf('mono')" [disabled]="generating()">
-            <mat-icon>description</mat-icon> PDF（白黒）
-          </button>
-        </div>
-      </div>
+      <!-- ツールバー: 項目追加 / リセット / PDF出力 -->
+      <app-setlist-toolbar
+        [isMobile]="isMobile()"
+        [generating]="generating()"
+        (addSong)="addSong()"
+        (addMc)="addMc()"
+        (addEncore)="addEncore()"
+        (reset)="resetAll()"
+        (exportPdf)="exportPdf($event)" />
 
       <!-- ステータス -->
       <div class="flex justify-end items-center gap-1 text-sm text-gray-500 mb-2">
