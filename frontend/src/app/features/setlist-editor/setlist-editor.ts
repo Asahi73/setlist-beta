@@ -8,46 +8,36 @@ import {
 } from '@angular/forms';
 import { debounceTime, map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  CdkDragDrop,
-  DragDropModule,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 
 import { SetlistService } from '../../core/setlist.service';
 import { PdfMode, Setlist, SongRow } from '../../core/models';
-import { generateSetlistPdf } from '../../core/pdf';
-import { formatDuration, parseDuration } from './duration.util';
-import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
+import { generateSetlistPdf } from './pdf';
+import { formatDuration, parseDuration } from './duration';
+import { PdfPreviewDialog } from './pdf-preview-dialog/pdf-preview-dialog';
+import { SetlistToolbar } from './setlist-toolbar/setlist-toolbar';
+import { SongList } from './song-list/song-list';
 
 @Component({
   selector: 'app-setlist-editor',
   imports: [
     ReactiveFormsModule,
-    DragDropModule,
-    MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatMenuModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+    SetlistToolbar,
+    SongList,
   ],
-  templateUrl: './setlist-editor.component.html',
-  styleUrl: './setlist-editor.component.scss',
+  templateUrl: './setlist-editor.html',
+  styleUrl: './setlist-editor.scss',
 })
-export class SetlistEditorComponent implements OnInit {
+export class SetlistEditor implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(SetlistService);
   private snackBar = inject(MatSnackBar);
@@ -61,8 +51,9 @@ export class SetlistEditorComponent implements OnInit {
     { initialValue: false },
   );
 
-  // スマホ表示で詳細を展開している行（行のFormGroup参照で管理＝並び替え・削除に強い）
-  private readonly expandedRows = signal(new Set<FormGroup>());
+  // スマホ表示で詳細を展開している行（行のFormGroup参照で管理＝並び替え・削除に強い）。
+  // 表示は SongList に委譲するため、状態を入力として渡せるよう protected で公開する。
+  protected readonly expandedRows = signal(new Set<FormGroup>());
 
   // PDF生成中（フォント遅延ロード含む）
   readonly generating = signal(false);
@@ -126,11 +117,7 @@ export class SetlistEditorComponent implements OnInit {
     this.setExpanded(row, true);
   }
 
-  // --- スマホ表示の展開/折りたたみ ---
-  isExpanded(row: FormGroup): boolean {
-    return this.expandedRows().has(row);
-  }
-
+  // --- スマホ表示の展開/折りたたみ（状態は親が所有し、SongList の操作を受けて更新する）---
   toggleExpand(row: FormGroup): void {
     this.setExpanded(row, !this.expandedRows().has(row));
   }
@@ -143,35 +130,6 @@ export class SetlistEditorComponent implements OnInit {
       next.delete(row);
     }
     this.expandedRows.set(next);
-  }
-
-  kindOf(index: number): string {
-    return this.songs.at(index).get('kind')?.value ?? 'song';
-  }
-
-  isMc(index: number): boolean {
-    return this.kindOf(index) === 'mc';
-  }
-
-  isEncore(index: number): boolean {
-    return this.kindOf(index) === 'encore';
-  }
-
-  // 行ラベル: 曲は連番、MCは「MC」、アンコール見出しは番号なし
-  rowLabel(index: number): string {
-    if (this.isMc(index)) {
-      return 'MC';
-    }
-    if (this.isEncore(index)) {
-      return '';
-    }
-    let n = 0;
-    for (let i = 0; i <= index; i++) {
-      if (this.kindOf(i) === 'song') {
-        n++;
-      }
-    }
-    return String(n);
   }
 
   songCount(): number {
@@ -250,7 +208,7 @@ export class SetlistEditorComponent implements OnInit {
     this.generating.set(true);
     generateSetlistPdf(setlist, mode)
       .then((blob) => {
-        this.dialog.open(PdfPreviewDialogComponent, {
+        this.dialog.open(PdfPreviewDialog, {
           data: {
             blob,
             filename: this.pdfFilename(setlist.title),

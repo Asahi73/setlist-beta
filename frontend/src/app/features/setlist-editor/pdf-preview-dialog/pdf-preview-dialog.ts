@@ -34,13 +34,13 @@ export interface PdfPreviewData {
     </mat-dialog-actions>
   `,
 })
-export class PdfPreviewDialogComponent implements OnDestroy {
+export class PdfPreviewDialog implements OnDestroy {
   private url: string;
   readonly safeUrl: SafeResourceUrl;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: PdfPreviewData,
-    private dialogRef: MatDialogRef<PdfPreviewDialogComponent>,
+    private dialogRef: MatDialogRef<PdfPreviewDialog>,
     sanitizer: DomSanitizer,
   ) {
     this.url = URL.createObjectURL(data.blob);
