@@ -178,11 +178,18 @@ td {
   }
 }
 
+// 上段の曲名入力は左右パディングを詰めて表示幅を稼ぐ（.m-card .cell と同詳細度で上書き）
+.m-card .m-title {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+// ハンドル・アイコンボタンは曲名に幅を回すため横幅を絞る（高さ44pxでタップ性は確保）
 .m-handle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
+  width: 24px;
   height: 44px;
   flex: none;
   border: 0;
@@ -190,13 +197,19 @@ td {
   color: #a1a1aa;
   cursor: grab;
   touch-action: none;
+
+  .mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .m-num {
-  min-width: 22px;
+  min-width: 15px;
   text-align: center;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #71717a;
 }
 
@@ -204,7 +217,7 @@ td {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
+  width: 36px;
   height: 44px;
   flex: none;
   border: 0;
@@ -213,6 +226,12 @@ td {
   color: #71717a;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
+
+  .mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
 
   &:hover {
     background: #f4f4f5;

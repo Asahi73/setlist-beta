@@ -97,7 +97,7 @@
               [class.encore-row]="isEncore(i)"
             >
               <!-- 上段: ハンドル / 番号 / タイトル / 展開 / 削除 -->
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1">
                 <button type="button" class="m-handle" cdkDragHandle aria-label="並び替え">
                   <mat-icon>drag_indicator</mat-icon>
                 </button>
@@ -105,13 +105,13 @@
 
                 @if (isEncore(i)) {
                   <input
-                    class="cell flex-1 text-center font-bold"
+                    class="cell m-title flex-1 text-center font-bold"
                     formControlName="title"
                     placeholder="アンコール"
                   />
                 } @else {
                   <input
-                    class="cell flex-1"
+                    class="cell m-title flex-1"
                     formControlName="title"
                     [placeholder]="isMc(i) ? 'MCの内容（話すこと・煽りなど）' : '曲名'"
                   />
