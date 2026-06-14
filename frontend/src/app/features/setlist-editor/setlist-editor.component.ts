@@ -6,7 +6,6 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { debounceTime } from 'rxjs';
 import {
   CdkDragDrop,
@@ -18,13 +17,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 
-import { AuthService } from '../../core/auth.service';
 import { SetlistService } from '../../core/setlist.service';
 import { PdfMode, Setlist, SongRow } from '../../core/models';
+import { buildPdfHtml } from '../../core/pdf-html';
 import { formatDuration, parseDuration } from './duration.util';
 import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
 
@@ -39,7 +37,6 @@ import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
   ],
   templateUrl: './setlist-editor.component.html',
   styleUrl: './setlist-editor.component.scss',
@@ -47,14 +44,11 @@ import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
 export class SetlistEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(SetlistService);
-  private auth = inject(AuthService);
-  private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
 
   readonly excitementLevels = [0, 1, 2, 3, 4, 5];
-  readonly generating = signal(false);
   // 自動保存済みかどうか（保存ボタンは廃止）
   readonly saved = signal(false);
 
@@ -192,30 +186,21 @@ export class SetlistEditorComponent implements OnInit {
   }
 
   exportPdf(mode: PdfMode): void {
-    // 編集中の内容を保存しつつ、そのままPDF生成リクエストに送る
+    // 編集中の内容を保存し、クライアント側で印刷用HTMLを組み立ててプレビュー表示する。
+    // バックエンド不要。ダイアログの「PDFとして保存 / 印刷」でブラウザ印刷へ。
     const setlist = this.toSetlist();
     this.service.save(setlist);
-    this.generating.set(true);
-    this.service
-      .downloadPdf(mode, setlist)
-      .then((blob) => {
-        this.dialog.open(PdfPreviewDialogComponent, {
-          data: {
-            blob,
-            filename: mode === 'color' ? 'setlist-color.pdf' : 'setlist.pdf',
-            modeLabel: mode === 'color' ? '蛍光色' : '白黒',
-          },
-          maxWidth: '95vw',
-        });
-      })
-      .catch(() =>
-        this.snackBar.open('PDF出力に失敗しました', undefined, { duration: 3000 }),
-      )
-      .finally(() => this.generating.set(false));
-  }
-
-  logout(): void {
-    this.auth.logout();
-    this.router.navigate(['/login']);
+    try {
+      const html = buildPdfHtml(setlist, mode);
+      this.dialog.open(PdfPreviewDialogComponent, {
+        data: {
+          html,
+          modeLabel: mode === 'color' ? '蛍光色' : '白黒',
+        },
+        maxWidth: '95vw',
+      });
+    } catch {
+      this.snackBar.open('PDF出力に失敗しました', undefined, { duration: 3000 });
+    }
   }
 }

@@ -1,0 +1,60 @@
+name: Deploy to GitHub Pages
+
+# main への push で Angular フロントをビルドし、GitHub Pages へ公開する。
+# 公開URL: https://<ユーザー名>.github.io/setlist-beta/
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時デプロイは1つに制限（古いrunは中断せず完走させる）
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      # base-href を /setlist-beta/ にしてビルド（プロジェクトページ用）
+      - run: npm run build:pages
+
+      # SPA フォールバック: GitHub Pages は未知パスで 404 を返すため、
+      # index.html のコピーを 404.html として置き、Angular ルーターに処理させる。
+      # .nojekyll で _ 始まりのファイルが無視されるのを防ぐ。
+      - run: |
+          cp dist/frontend/browser/index.html dist/frontend/browser/404.html
+          touch dist/frontend/browser/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist/frontend/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

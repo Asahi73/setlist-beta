@@ -1,52 +1,54 @@
-# セットリスト管理アプリ (setlist-app)
+# セットリスト管理アプリ ベータ版 (setlist-beta)
 
 ## プロジェクト概要
 
-バンドマン向けのセットリスト管理Webアプリ
+バンドマン向けのセットリスト管理Webアプリの**ベータ版**。
+**完全フロント完結・バックエンドなし**の静的SPAで、GitHub Pages に公開する。
+
+> フルスタック版（FastAPI / Supabase / 認証）は別リポジトリ `setlist-app` で開発する。
+> このリポジトリはそこから派生した、静的公開専用のベータ版。
 
 ## 主な機能
 
-- セットリストの作成・編集・保存
-- ライブ用PDF出力（蛍光色モード・白黒モード）
-- 曲の管理（採用回数・タグ・盛り上がりなどのステータス）
-- ユーザー認証（Supabase Auth）
+- セットリストの作成・編集・保存（localStorage に自動保存）
+- ライブ用PDF出力（蛍光色モード・白黒モード）— ブラウザ印刷で生成
+- 曲の管理（盛り上がり・備考などのステータス、MC/アンコール行）
 
 ## 技術スタック
 
 - フロントエンド: Angular 22 / Angular Material / Tailwind CSS
-- バックエンド: Python / FastAPI / Poetry
-- DB: Supabase (PostgreSQL)
-- 認証: Supabase Auth
-- PDF生成: WeasyPrint
-- ローカル開発: Docker Compose
-- フロントホスティング: Vercel
-- バックエンドホスティング: Render
+- データ保持: ブラウザ localStorage（サーバー保存なし）
+- PDF生成: クライアント側でHTML/CSSを組み立て、ブラウザ印刷（`window.print`）で出力
+- ホスティング: GitHub Pages（`.github/workflows/deploy.yml` で自動デプロイ）
 
 ## ディレクトリ構成
 
-- `/frontend` - Angularプロジェクト
-- `/backend` - FastAPIプロジェクト
+- `/frontend` - Angularプロジェクト（このリポジトリの本体）
+- `/.github/workflows/deploy.yml` - GitHub Pages デプロイ
 
 ## アーキテクチャ方針
 
 - **データはクライアントの localStorage に保持する（ユーザーごとに独立・使い切り）**。
-  サーバーはセットリストを保存しない（ステートレス）。これにより全員が同じデータを触ってしまう問題を回避し、リロードにも耐える。
-  - localStorage が空のときはサンプル（入力例）から開始する
-  - 将来、複数端末同期やチーム共有が必要になったら Supabase(PostgreSQL) をサーバー側ストレージとして再導入する
-- バックエンドの責務は **認証** と **PDF生成** のみ。
-  - PDFは「サーバー保存値」ではなく、リクエストボディで受け取ったセットリストから生成する
-- 認証は当面「全ユーザー共通の秘密パスワード1つ」の簡易ゲート（`APP_PASSWORD`→`APP_TOKEN`をBearerで検証）。後でSupabase Authに差し替える
+  サーバーは存在しない（完全ステートレス）。リロードにも耐える。
+  - localStorage が空のときはサンプル（入力例）から開始する（`SetlistService`）
+  - 将来、複数端末同期やチーム共有が必要になったらフルスタック版 `setlist-app` 側で対応する
+- **PDFはバックエンドを使わずクライアントで生成する**。
+  - `frontend/src/app/core/pdf-html.ts` が color/mono のHTML/CSSを組み立てる
+    （もとは backend の WeasyPrint テンプレートを移植したもの）
+  - プレビューダイアログの iframe をそのまま `window.print()` し、ユーザーが「PDFに保存」
+- **認証ゲートなし（オープンベータ）**。ログイン画面・authGuard は撤去済み。
 
-## API規約
+## デプロイ規約
 
-- ベースパスは `/api`
-- 認証: `POST /api/auth/login` でトークン取得 → 以降 `Authorization: Bearer <token>`
-- PDF生成: `POST /api/setlist/pdf?mode=color|mono`（ボディに編集中のセットリストを送る）
+- `main` への push で GitHub Actions がビルド & GitHub Pages へ公開
+- 公開URL: `https://<ユーザー名>.github.io/setlist-beta/`
+- base-href は `/setlist-beta/`（`npm run build:pages`）。リポジトリ名を変える場合は
+  `frontend/package.json` の `build:pages` と workflow の双方を合わせる
+- SPA フォールバックのため `index.html` を `404.html` にコピー、`.nojekyll` を配置（workflow内で実施）
 
 ## 開発ルール
 
-- フロントとバックエンドはモノレポ構成
-- APIはREST
+- API は持たない（静的フロントのみ）
 - コメントは日本語でOK
 - コミットメッセージは日本語でOK
 
