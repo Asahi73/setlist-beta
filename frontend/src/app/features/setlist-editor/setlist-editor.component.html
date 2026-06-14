@@ -51,6 +51,9 @@
         <button mat-stroked-button (click)="addEncore()">
           <mat-icon>celebration</mat-icon> アンコールを追加
         </button>
+        <button mat-stroked-button color="warn" (click)="resetAll()" matTooltip="保存データを削除して初期状態に戻す">
+          <mat-icon>restart_alt</mat-icon> リセット
+        </button>
 
         <div class="ml-auto flex items-center gap-2">
           @if (generating()) {

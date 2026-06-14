@@ -145,6 +145,18 @@ export class SetlistEditorComponent implements OnInit {
     this.songs.removeAt(index);
   }
 
+  // セットリストをリセットする（localStorageの保存データを削除し、初期状態に戻す）。
+  // 取り消せない操作なので確認を取る。
+  resetAll(): void {
+    const ok = window.confirm(
+      'セットリストをリセットします。\n保存中のデータ（このブラウザの内容）は削除され、初期状態に戻ります。よろしいですか？',
+    );
+    if (!ok) return;
+    this.service.clear();
+    this.setForm(this.service.load()); // 保存データが消えたのでサンプルが返る
+    this.snackBar.open('リセットしました', undefined, { duration: 2000 });
+  }
+
   drop(event: CdkDragDrop<unknown>): void {
     if (event.previousIndex === event.currentIndex) {
       return;
