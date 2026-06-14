@@ -6,11 +6,13 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { debounceTime, map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   CdkDragDrop,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -49,6 +51,16 @@ export class SetlistEditorComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  private breakpoint = inject(BreakpointObserver);
+
+  // スマホ幅（Tailwindのmd未満）かどうか。デバイス判定ではなくビューポート幅に応答する。
+  readonly isMobile = toSignal(
+    this.breakpoint.observe('(max-width: 767.98px)').pipe(map((r) => r.matches)),
+    { initialValue: false },
+  );
+
+  // スマホ表示で詳細を展開している行（行のFormGroup参照で管理＝並び替え・削除に強い）
+  private readonly expandedRows = signal(new Set<FormGroup>());
 
   // PDF生成中（フォント遅延ロード含む）
   readonly generating = signal(false);
@@ -95,15 +107,40 @@ export class SetlistEditorComponent implements OnInit {
   }
 
   addSong(): void {
-    this.songs.push(this.createRow({ kind: 'song' }));
+    this.addRow(this.createRow({ kind: 'song' }));
   }
 
   addMc(): void {
-    this.songs.push(this.createRow({ kind: 'mc' }));
+    this.addRow(this.createRow({ kind: 'mc' }));
   }
 
   addEncore(): void {
-    this.songs.push(this.createRow({ kind: 'encore', title: 'アンコール' }));
+    this.addRow(this.createRow({ kind: 'encore', title: 'アンコール' }));
+  }
+
+  private addRow(row: FormGroup): void {
+    this.songs.push(row);
+    // 追加直後はスマホでもすぐ編集できるよう展開しておく
+    this.setExpanded(row, true);
+  }
+
+  // --- スマホ表示の展開/折りたたみ ---
+  isExpanded(row: FormGroup): boolean {
+    return this.expandedRows().has(row);
+  }
+
+  toggleExpand(row: FormGroup): void {
+    this.setExpanded(row, !this.expandedRows().has(row));
+  }
+
+  private setExpanded(row: FormGroup, open: boolean): void {
+    const next = new Set(this.expandedRows());
+    if (open) {
+      next.add(row);
+    } else {
+      next.delete(row);
+    }
+    this.expandedRows.set(next);
   }
 
   kindOf(index: number): string {
@@ -142,7 +179,11 @@ export class SetlistEditorComponent implements OnInit {
   }
 
   removeRow(index: number): void {
+    const row = this.songs.at(index);
     this.songs.removeAt(index);
+    if (row) {
+      this.setExpanded(row, false);
+    }
   }
 
   // セットリストをリセットする（localStorageの保存データを削除し、初期状態に戻す）。
@@ -153,6 +194,7 @@ export class SetlistEditorComponent implements OnInit {
     );
     if (!ok) return;
     this.service.clear();
+    this.expandedRows.set(new Set());
     this.setForm(this.service.load()); // 保存データが消えたのでサンプルが返る
     this.snackBar.open('リセットしました', undefined, { duration: 2000 });
   }
