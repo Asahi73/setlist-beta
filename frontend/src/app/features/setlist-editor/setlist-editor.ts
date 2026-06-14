@@ -20,9 +20,9 @@ import { SetlistService } from '../../core/setlist.service';
 import { PdfMode, Setlist, SongRow } from '../../core/models';
 import { generateSetlistPdf } from './pdf';
 import { formatDuration, parseDuration } from './duration';
-import { PdfPreviewDialog } from './pdf-preview-dialog';
-import { SetlistToolbar } from './setlist-toolbar';
-import { SongList } from './song-list';
+import { PdfPreviewDialog } from './pdf-preview-dialog/pdf-preview-dialog';
+import { SetlistToolbar } from './setlist-toolbar/setlist-toolbar';
+import { SongList } from './song-list/song-list';
 
 @Component({
   selector: 'app-setlist-editor',
