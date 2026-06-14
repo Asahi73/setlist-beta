@@ -192,7 +192,7 @@ export class SetlistEditorComponent implements OnInit {
   // 取り消せない操作なので確認を取る。
   resetAll(): void {
     const ok = window.confirm(
-      'セットリストをリセットします。\n保存中のデータ（このブラウザの内容）は削除され、初期状態に戻ります。よろしいですか？',
+      '保存中のセットリストは削除され、初期状態に戻ります。よろしいですか？',
     );
     if (!ok) return;
     this.service.clear();
