@@ -10,7 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-header',
   imports: [MatIconModule, MatTooltipModule],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+  templateUrl: './header.html',
+  styleUrl: './header.scss',
 })
-export class HeaderComponent {}
+export class Header {}

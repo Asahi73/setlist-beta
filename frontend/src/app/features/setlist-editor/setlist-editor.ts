@@ -29,7 +29,7 @@ import { PdfMode, Setlist, SongRow } from '../../core/models';
 import { generateSetlistPdf } from './pdf';
 import { PrimaryButtonDirective } from '../../shared/primary-button.directive';
 import { formatDuration, parseDuration } from './duration';
-import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
+import { PdfPreviewDialog } from './pdf-preview-dialog';
 
 @Component({
   selector: 'app-setlist-editor',
@@ -46,10 +46,10 @@ import { PdfPreviewDialogComponent } from './pdf-preview-dialog.component';
     MatProgressSpinnerModule,
     PrimaryButtonDirective,
   ],
-  templateUrl: './setlist-editor.component.html',
-  styleUrl: './setlist-editor.component.scss',
+  templateUrl: './setlist-editor.html',
+  styleUrl: './setlist-editor.scss',
 })
-export class SetlistEditorComponent implements OnInit {
+export class SetlistEditor implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(SetlistService);
   private snackBar = inject(MatSnackBar);
@@ -252,7 +252,7 @@ export class SetlistEditorComponent implements OnInit {
     this.generating.set(true);
     generateSetlistPdf(setlist, mode)
       .then((blob) => {
-        this.dialog.open(PdfPreviewDialogComponent, {
+        this.dialog.open(PdfPreviewDialog, {
           data: {
             blob,
             filename: this.pdfFilename(setlist.title),
