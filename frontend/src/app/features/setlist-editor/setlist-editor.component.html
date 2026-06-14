@@ -42,15 +42,34 @@
 
       <!-- ツールバー: 左=項目追加 / 右=PDF出力（青・プライマリ） -->
       <div class="flex flex-wrap items-center gap-2 mb-3">
-        <button mat-stroked-button (click)="addSong()">
-          <mat-icon>add</mat-icon> 曲を追加
-        </button>
-        <button mat-stroked-button (click)="addMc()">
-          <mat-icon>mic</mat-icon> MCを追加
-        </button>
-        <button mat-stroked-button (click)="addEncore()">
-          <mat-icon>celebration</mat-icon> アンコールを追加
-        </button>
+        @if (isMobile()) {
+          <!-- スマホ: 1つの「追加」ボタンにまとめ、メニューで種類を選ぶ -->
+          <button mat-stroked-button [matMenuTriggerFor]="addMenu">
+            <mat-icon>add</mat-icon> 追加 <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #addMenu="matMenu">
+            <button mat-menu-item (click)="addSong()">
+              <mat-icon>add</mat-icon> <span>曲</span>
+            </button>
+            <button mat-menu-item (click)="addMc()">
+              <mat-icon>mic</mat-icon> <span>MC</span>
+            </button>
+            <button mat-menu-item (click)="addEncore()">
+              <mat-icon>celebration</mat-icon> <span>アンコール</span>
+            </button>
+          </mat-menu>
+        } @else {
+          <!-- PC: 種類ごとに個別ボタン -->
+          <button mat-stroked-button (click)="addSong()">
+            <mat-icon>add</mat-icon> 曲を追加
+          </button>
+          <button mat-stroked-button (click)="addMc()">
+            <mat-icon>mic</mat-icon> MCを追加
+          </button>
+          <button mat-stroked-button (click)="addEncore()">
+            <mat-icon>celebration</mat-icon> アンコールを追加
+          </button>
+        }
         <button mat-stroked-button color="warn" (click)="resetAll()" matTooltip="保存データを削除して初期状態に戻す">
           <mat-icon>restart_alt</mat-icon> リセット
         </button>
