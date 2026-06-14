@@ -6,7 +6,6 @@ export interface SongRow {
   key: string; // song以外では未使用
   bpm: number; // テンポ。0は未設定。song以外では未使用
   duration_sec: number; // song以外では未使用
-  excitement: number; // 1〜5。0は未設定。song以外では未使用
   note: string;
 }
 
