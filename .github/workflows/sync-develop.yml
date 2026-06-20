@@ -1,0 +1,54 @@
+name: Sync main to develop
+
+# main へ push（PR マージ含む）されたら、その変更を develop に自動マージして同期する。
+# コンフリクトなどで機械的にマージできない場合はジョブが失敗し、GitHub から通知される。
+#
+# 配置先: 各リポジトリの .github/workflows/sync-develop.yml
+# 前提: develop は直接 push 運用（ブランチ保護で PR 必須にしない）。
+#       保護を掛ける場合は「develop への同期 PR を自動作成」方式に切り替えること。
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+# 同時に複数回走らないよう直列化（連続マージ時の競合を防ぐ）
+concurrency:
+  group: sync-main-to-develop
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge main into develop
+        run: |
+          set -euo pipefail
+
+          # develop が存在しない場合は何もしない（導入前のリポジトリ対策）
+          if ! git ls-remote --exit-code --heads origin develop >/dev/null 2>&1; then
+            echo "develop ブランチが無いためスキップします。"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin main develop
+          git checkout develop
+
+          # すでに main を含んでいれば何もすることはない
+          if git merge-base --is-ancestor origin/main develop; then
+            echo "develop はすでに main を含んでいます。スキップします。"
+            exit 0
+          fi
+
+          # マージ実行。コンフリクト時は非ゼロ終了 → ジョブ失敗 → 通知
+          git merge --no-ff origin/main -m "Merge main into develop (auto-sync)"
+          git push origin develop
